@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "es6",
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    "preserveConstEnums": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "jsx": "preserve",
+    "lib": ["dom","es5","es6","es7","es2017.object"],
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src"
+  },
+  "filesGlob": [
+    "./**/*.ts"
+  ],
+  "include": [
+    "./**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "./**/node_modules/*",
+    "./node_modules/*"
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "useBabel": true,
+    "forkChecker": true,
+    "useCache": false
+  }
+}
