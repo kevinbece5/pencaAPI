@@ -1,0 +1,98 @@
+service: security
+custom:
+  APP_ENV: ${env:SERVERLESS_APP}
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: ${env:${self:custom.APP_ENV}_API_STAGE}
+  profile: ${env:SERVERLESS_PROFILE}
+  versionFunctions: false
+  environment:
+    AWS_API_ACCESS_KEY: ${env:${self:custom.APP_ENV}_API_AWS_ACCESS_KEY}
+    AWS_API_SECRET_KEY: ${env:${self:custom.APP_ENV}_API_AWS_SECRET_KEY}
+    AWS_API_REGION: ${env:${self:custom.APP_ENV}_API_AWS_REGION}
+    APP: ${env:SERVERLESS_APP}
+    STAGE: ${env:${self:custom.APP_ENV}_API_STAGE}
+    TOKEN_SECRET: ${env:${self:custom.APP_ENV}_API_SECURITY_TOKEN_SECRET}
+    SECRET_ENCRYPT_PASSWORD: ${env:${self:custom.APP_ENV}_API_SECURITY_SECRET_ENCRYPT_PASSWORD}
+    TTL: ${env:${self:custom.APP_ENV}_API_SECURITY_TTL}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - "SNS:Publish"
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource:
+        - "*"
+package:
+  individually: true
+  exclude:
+    - 'src/**'
+    - 'dist/**'
+functions:
+  logIn:
+    handler: logInHandler.logInHandler
+    name: ${self:provider.stage}-${self:service}-logIn
+    events:
+      - http:
+          path: ${self:service}/login
+          method: post
+          cors: true
+  
+  validation:
+    handler: validationHandler.validationHandler
+    name: ${self:provider.stage}-${self:service}-validation
+
+  validateToken:
+    handler: validateTokenHandler.validateTokenHandler
+    name: ${self:provider.stage}-${self:service}-validateToken
+    events:
+      - http:
+          path: ${self:service}/validateToken
+          method: post
+          cors: true
+
+  logOut:
+    handler: logOutHandler.logOutHandler
+    name: ${self:provider.stage}-${self:service}-logOut
+    events:
+      - http:
+          path: ${self:service}/logout
+          method: delete
+          cors: true
+
+  users:
+    handler: usersHandler.usersHandler
+    name: ${self:provider.stage}-${self:service}-users
+    events:
+      - http:
+          path: ${self:service}/users
+          method: post
+          cors: true
+          authorizer:
+            name: validation
+            identitySource: method.request.header.Authorization
+      - http:
+          path: ${self:service}/users
+          method: get
+          cors: true
+          authorizer:
+            name: validation
+            identitySource: method.request.header.Authorization
+
+  getUsername:
+    handler: getUserNameHandler.getUserNameHandler
+    name: ${self:provider.stage}-${self:service}-getUserName

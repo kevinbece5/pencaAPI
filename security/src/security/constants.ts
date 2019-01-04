@@ -1,0 +1,9 @@
+export const INVALID_JSON_BODY = 'Invalid JSON body';
+export const UNAUTHORIZED = 'Unauthorized';
+export const MISSING_USERNAME = 'Missing username in body';
+export const MISSING_PASSWORD = 'Missing password in body';
+export const MISSING_TOKEN = 'Missing token in body';
+export const REPEATED_USERNAME = 'Username already exists';
+export const MISSING_FIRSTNAME = 'Missing First Name in body';
+export const MISSING_LASTNAME = 'Missing Last Name in body';
+export const MISSING_EMAIL = 'Missing email in body';
